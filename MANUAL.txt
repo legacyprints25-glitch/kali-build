@@ -1,0 +1,270 @@
+
+
+
+                                                                                                                 
+
+                                       manual cc1101 sdr 
+
+
+
+
+
+
+
+
+
+
+
+
+####### real work flow #####
+
+
+
+
+
+
+picocom /dev/pico -b115200 --echo --imap crlf
+  COMMAND TO ENTER PICO 
+
+
+
+THEN USE : BIN_ON
+THEN : SWEEP
+EXIT WITH : CNTRL A CNTRL X 
+ 
+
+RUN BRIDGE WITH 
+
+python3 ~/bridge.py
+  
+
+
+THEN START SDR 
+SHOULD SAY CONNECTED INT TERMINAL AND WATERFALL A MIN LATER 
+
+
+
+
+
+📘 PICO + CC1101 + SDR++ RF WORKFLOW MANUAL
+(Full Command Reference + Operation Guide)  
+Mikey’s Build — April 2026
+
+🔧 1. Hardware Overview
+RP2040 Pico
+Runs main.py
+
+Generates sweep data
+
+Handles TUNE, SWEEP, REPLAY
+
+Outputs binary RF samples over USB serial
+
+CC1101
+RF front‑end
+
+Tuned by Pico via SPI
+
+Provides RSSI / raw sample data
+
+Linux Host (Kali)
+Runs bridge.py
+
+Exposes Pico data as a TCP device for SDR++
+
+Auto‑detects /dev/pico or /dev/ttyACM*
+
+SDR++
+Displays waterfall
+
+Reads from TCP input
+
+Shows live RF spectrum
+
+🔌 2. Connecting the Pico
+Check device
+bash
+ls -l /dev/pico
+Should show:
+
+Code
+/dev/pico -> ttyACM1
+Open REPL
+bash
+picocom /dev/pico -b115200 --echo --imap crlf
+Exit:
+
+Code
+Ctrl+A  Ctrl+X
+🧠 3. Pico Firmware Commands (main.py)
+When connected via picocom, type these commands:
+
+Available Commands
+Code
+SWEEP
+TUNE <freq>
+REPLAY
+BIN_ON
+BIN_OFF
+Descriptions
+SWEEP
+Runs a frequency sweep across the configured band.
+Used for waterfall scanning.
+
+TUNE <freq>
+Example:
+
+Code
+TUNE 433920000
+Locks CC1101 to a single frequency.
+
+REPLAY
+Replays the last captured RF burst (if implemented in your build).
+
+BIN_ON
+Enables binary mode (raw sample streaming).
+
+BIN_OFF
+Disables binary mode (text mode only).
+
+⚡ 4. SPEEDING UP THE WATERFALL (IMPORTANT)
+Edit sweep delay in main.py
+Find the sweep loop and change:
+
+Code
+time.sleep(0.05)
+to:
+
+Code
+time.sleep(0.001)
+or max speed:
+
+Code
+time.sleep(0)
+This is the #1 factor for waterfall speed.
+
+🖥️ 5. Bridge Script (Linux)
+Start the bridge
+bash
+python3 ~/bridge.py
+Expected output:
+
+Code
+[BRIDGE] Serial on /dev/pico
+[BRIDGE] TCP on 9100
+[BRIDGE] Waiting for SDR++
+Kill old bridge
+bash
+sudo fuser -k 9100/tcp
+📡 6. SDR++ Setup
+Device → TCP Input
+Host: 127.0.0.1
+
+Port: 9100
+
+Sample Format: RAW
+
+Sample Rate: 500k (or whatever your Pico outputs)
+
+Waterfall Settings
+FFT Size: 256 (fast)
+
+Averaging: 0
+
+Speed: max
+
+Contrast: +10 to +20
+
+🔄 7. Typical Workflow
+1. Start bridge
+bash
+python3 ~/bridge.py
+2. Open SDR++
+Select TCP device
+
+Hit “Start”
+
+3. Open Pico console
+bash
+picocom /dev/pico -b115200 --echo --imap crlf
+4. Run commands
+Sweep mode
+Code
+SWEEP
+BIN_ON
+Tune mode
+Code
+TUNE 433920000
+BIN_ON
+Replay
+Code
+REPLAY
+🛠️ 8. Troubleshooting
+Bridge says “Address already in use”
+Kill old instance:
+
+bash
+sudo fuser -k 9100/tcp
+No data in SDR++
+Check:
+
+bash
+picocom /dev/pico
+Send:
+
+Code
+BIN_ON
+SWEEP
+Pico not detected
+bash
+ls -l /dev/pico
+If missing:
+
+bash
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+🧪 9. Testing Commands
+Test sweep
+Code
+SWEEP
+Test tune
+Code
+TUNE 315000000
+Test binary
+Code
+BIN_ON
+Test replay
+Code
+REPLAY
+📄 10. Manual Summary
+This setup gives you:
+
+Live RF waterfall
+
+Fast sweep scanning
+
+Direct CC1101 control
+
+Binary sample streaming
+
+TCP device for SDR++
+
+Replay mode
+
+Stable port aliasing
+
+Everything is now unified and stable.
+
+If you want, I can also generate:
+
+A PDF‑style formatted version
+
+A systemd service for auto‑start
+
+A max‑speed optimized main.py
+
+A command cheat sheet
+
+A troubleshooting appendix
+
+Just tell me what you want next.
