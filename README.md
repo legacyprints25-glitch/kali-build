@@ -1,2 +1,14 @@
-# kali-build
-Overclocked Kali Linux cyberdeck for Raspberry Pi 4 with full Kali tools, SDR++, dual‑band Wi‑Fi, SSD/SD boot, CC1101 RF integration, Pico‑controlled scanning, Wi‑Fi sniffing/cracking setup, and 3D‑printable case models for a portable, Flipper‑style but far more powerful build.
+# Kali Cyberdeck Build
+
+An overclocked, portable Kali Linux cyberdeck for the Raspberry Pi 4. This build includes the full Kali toolset, SDR++, dual‑band Wi‑Fi adapter support, SSD/SD boot, and complete CC1101 RF integration. A Raspberry Pi Pico (USB‑connected) controls the CC1101 for high/low‑frequency scanning, with record/replay functionality under active development.
+
+The system is configured for Wi‑Fi sniffing, monitoring, and code‑cracking workflows, plus a full suite of cybersecurity tools. The desktop auto‑boots into a ready‑to‑use environment.
+
+This repository also includes 3D‑printable case models for a full portable cyberdeck setup:
+- Raspberry Pi 4
+- 7” DSI touchscreen
+- CC1101 module
+- SSD mount
+- External Pico mounts and cases
+
+The complete 26GB flashable image is available in the **Releases** section.
