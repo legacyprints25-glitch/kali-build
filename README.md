@@ -11,4 +11,6 @@ This repository also includes 3D‑printable case models for a full portable cyb
 - SSD mount
 - External Pico mounts and cases
 
-The complete 26GB flashable image is available in the **Releases** section.
+The complete 26GB flashable image is available
+
+the stl files are all in one batch, you may need to seperate them. the stl files are available in the models folder. let me know of any changes or contributions Id love for it to get even more developed.
